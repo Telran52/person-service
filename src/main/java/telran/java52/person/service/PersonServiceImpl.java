@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import telran.java52.person.dao.PersonRepository;
 import telran.java52.person.dto.AddressDto;
+import telran.java52.person.dto.ChildDto;
 import telran.java52.person.dto.CityPopulationDto;
+import telran.java52.person.dto.EmployeeDto;
 import telran.java52.person.dto.PersonDto;
 import telran.java52.person.dto.exceptions.PersonNotFoundException;
 import telran.java52.person.model.Address;
@@ -94,6 +96,22 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
 	@Override
 	public Iterable<CityPopulationDto> getCitiesPopulation() {
 		return personRepository.getCitiesPopulation();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Iterable<EmployeeDto> findEmployeeBySalary(int min, int max) {
+		return personRepository.findBySalaryBetween(min, max)
+				.map(p -> modelMapper.map(p, EmployeeDto.class))
+				.toList();
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Iterable<ChildDto> getChildren() {
+		return personRepository.findChildrenBy()
+				.map(c -> modelMapper.map(c, ChildDto.class))
+				.toList();
 	}
 
 	@Transactional
